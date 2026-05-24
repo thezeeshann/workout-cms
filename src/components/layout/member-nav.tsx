@@ -10,6 +10,7 @@ const links = [
   { href: "/member/program", label: "My program" },
   { href: "/member/workouts/new", label: "Build workout" },
   { href: "/member/history", label: "History" },
+  { href: "/member/profile", label: "Profile" },
 ] as const;
 
 function isMemberNavActive(pathname: string, href: string) {
@@ -32,6 +33,9 @@ function isMemberNavActive(pathname: string, href: string) {
   if (href === "/member/history") {
     return pathname === "/member/history" || pathname.startsWith("/member/history/");
   }
+  if (href === "/member/profile") {
+    return pathname === "/member/profile" || pathname.startsWith("/member/profile/");
+  }
   return pathname === href;
 }
 
@@ -40,7 +44,7 @@ export function MemberNav() {
 
   return (
     <nav
-      className="font-heading flex flex-wrap gap-x-4 gap-y-2 border-b border-border pb-4 text-xs font-semibold tracking-[0.12em] uppercase"
+      className="font-heading flex min-h-10 flex-wrap items-end gap-x-4 gap-y-2 border-b border-border pb-3 text-xs font-semibold tracking-[0.12em] uppercase"
       aria-label="Member"
     >
       {links.map((l) => {
@@ -50,10 +54,10 @@ export function MemberNav() {
             key={l.href}
             href={l.href}
             className={cn(
-              "cursor-pointer transition-colors duration-150",
+              "cursor-pointer border-b-2 pb-2 transition-colors duration-150",
               active
-                ? "text-foreground underline decoration-primary decoration-2 underline-offset-4"
-                : "text-muted-foreground hover:text-foreground"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             )}
             aria-current={active ? "page" : undefined}
           >

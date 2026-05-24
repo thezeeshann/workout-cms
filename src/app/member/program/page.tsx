@@ -5,7 +5,9 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { MemberProgramSkeleton } from "@/components/layout/loading-skeletons";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import {
   Card,
@@ -15,6 +17,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { WorkoutExerciseStepper } from "@/components/member/workout-exercise-stepper";
+import {
+  dashboardCardClass,
+  dashboardCardTitleClass,
+} from "@/lib/ui/dashboard";
 
 type ActiveResponse = {
   active: {
@@ -55,15 +61,17 @@ export default function MemberProgramPage() {
         Active workout and quick log for history.
       </SectionHeader>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <MemberProgramSkeleton />
       ) : error ? (
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Error"}
         </p>
       ) : !data?.active ? (
-        <Card>
+        <Card className={dashboardCardClass}>
           <CardHeader>
-            <CardTitle className="text-base">No active program</CardTitle>
+            <CardTitle className={dashboardCardTitleClass}>
+              No active program
+            </CardTitle>
             <CardDescription>
               Pick a workout from the catalog and tap &quot;Use as my
               program&quot;.
@@ -95,9 +103,9 @@ export default function MemberProgramPage() {
               Log session
             </Button>
           </div>
-          <Card>
+          <Card className={dashboardCardClass}>
             <CardHeader>
-              <CardTitle className="text-base">
+              <CardTitle className={dashboardCardTitleClass}>
                 {data.active.workout.name}
               </CardTitle>
               {data.active.workout.description ? (

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { consumeAuthIntent } from "@/lib/auth/auth-intent";
+import { triggerNudge } from "@/lib/haptics";
 
 export function AuthSuccessToast() {
   const ran = useRef(false);
@@ -17,6 +18,7 @@ export function AuthSuccessToast() {
 
     void authClient.getSession().then(({ data }) => {
       if (!data?.session) return;
+      triggerNudge();
       if (intent === "signup") {
         toast.success("Account created successfully. Welcome!");
       } else {

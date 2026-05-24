@@ -5,7 +5,7 @@ import {
   dashboardPathForRole,
   type AppRole,
 } from "@/lib/auth/dashboard-path";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import {
   Card,

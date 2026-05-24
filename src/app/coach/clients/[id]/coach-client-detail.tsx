@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { CoachClientDetailSkeleton } from "@/components/layout/loading-skeletons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -94,7 +95,7 @@ export function CoachClientDetail({ clientId }: { clientId: string }) {
   });
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <CoachClientDetailSkeleton />;
   }
   if (error) {
     return (

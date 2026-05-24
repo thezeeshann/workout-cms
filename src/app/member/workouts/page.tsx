@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { MemberCardGridSkeleton } from "@/components/layout/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -11,6 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  dashboardCardClass,
+  dashboardCardTitleClass,
+  dashboardGridClass,
+} from "@/lib/ui/dashboard";
 
 type WorkoutRow = {
   id: string;
@@ -32,23 +38,27 @@ export default function MemberWorkoutsPage() {
         Templates and custom programs you can assign under My program.
       </SectionHeader>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading workouts…</p>
+        <MemberCardGridSkeleton count={4} />
       ) : error ? (
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Failed to load"}
         </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className={dashboardGridClass}>
           {data?.workouts.map((w) => (
             <Link
               key={w.id}
               href={`/member/workouts/${w.id}`}
               className="block cursor-pointer"
             >
-              <Card className="h-full transition-colors hover:bg-muted/40">
+              <Card
+                className={`h-full transition-colors hover:bg-muted/40 ${dashboardCardClass}`}
+              >
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-base">{w.name}</CardTitle>
+                    <CardTitle className={dashboardCardTitleClass}>
+                      {w.name}
+                    </CardTitle>
                     <Badge variant="outline">{w.splitType}</Badge>
                   </div>
                   <CardDescription>

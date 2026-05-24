@@ -41,7 +41,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${syne.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full touch-manipulation font-sans">
+      <body className="min-h-full touch-manipulation font-sans" suppressHydrationWarning>
         <AppProviders>
           <SkipLink />
           <div id="main-content" className="flex min-h-full flex-col">

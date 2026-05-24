@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { AdminClientDetailSkeleton } from "@/components/layout/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -120,10 +121,13 @@ export function AdminClientDetail({ clientId }: { clientId: string }) {
       }),
     onSuccess: () => {
       toast.success("Coach assigned");
+      setCoachToAssign(null);
       qc.invalidateQueries({ queryKey: ["admin", "client", clientId] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const [coachToAssign, setCoachToAssign] = React.useState<string | null>(null);
 
   const [attendanceDay, setAttendanceDay] = React.useState(() => {
     const d = new Date();
@@ -131,9 +135,7 @@ export function AdminClientDetail({ clientId }: { clientId: string }) {
   });
 
   if (isLoading) {
-    return (
-      <p className="text-sm text-muted-foreground">Loading client…</p>
-    );
+    return <AdminClientDetailSkeleton />;
   }
   if (error || !data) {
     return (
@@ -144,6 +146,11 @@ export function AdminClientDetail({ clientId }: { clientId: string }) {
   }
 
   const { client, attendance: attRows, coaches } = data;
+
+  const assignedCoachIds = new Set(coaches.map((c) => c.id));
+  const availableCoaches = (coachesData?.coaches ?? []).filter(
+    (coach) => !assignedCoachIds.has(coach.id)
+  );
 
   return (
     <div className="space-y-8">
@@ -283,26 +290,53 @@ export function AdminClientDetail({ clientId }: { clientId: string }) {
             ) : null}
           </div>
           <div className="flex flex-wrap items-end gap-2">
-            <div className="min-w-[200px] space-y-2">
+            <div className="min-w-[260px] flex-1 space-y-2">
               <Label>Add coach</Label>
               <Select
+                value={coachToAssign ?? undefined}
                 onValueChange={(id) => {
-                  if (typeof id === "string") assignCoach.mutate(id);
+                  if (typeof id === "string") setCoachToAssign(id);
                 }}
                 disabled={assignCoach.isPending}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full min-w-[260px]">
                   <SelectValue placeholder="Choose coach" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(coachesData?.coaches ?? []).map((coach) => (
-                    <SelectItem key={coach.id} value={coach.id}>
-                      {coach.displayName ?? coach.email}
+                  {availableCoaches.length === 0 ? (
+                    <SelectItem value="__none" disabled>
+                      No coaches available
                     </SelectItem>
-                  ))}
+                  ) : (
+                    availableCoaches.map((coach) => (
+                      <SelectItem key={coach.id} value={coach.id}>
+                        <span className="flex flex-col items-start gap-0.5">
+                          <span>{coach.displayName ?? coach.email}</span>
+                          {coach.displayName ? (
+                            <span className="text-xs text-muted-foreground">
+                              {coach.email}
+                            </span>
+                          ) : null}
+                        </span>
+                      </SelectItem>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
+            <Button
+              type="button"
+              onClick={() => {
+                if (coachToAssign) assignCoach.mutate(coachToAssign);
+              }}
+              disabled={
+                !coachToAssign ||
+                assignCoach.isPending ||
+                availableCoaches.length === 0
+              }
+            >
+              Assign
+            </Button>
           </div>
         </CardContent>
       </Card>

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { MemberHomeCardsSkeleton } from "@/components/layout/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -11,6 +12,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  dashboardCardClass,
+  dashboardCardTitleClass,
+  dashboardGridClass,
+} from "@/lib/ui/dashboard";
 
 type MeResponse = {
   profile: {
@@ -37,27 +43,29 @@ export default function MemberHomePage() {
         Attendance and subscription snapshot.
       </SectionHeader>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <MemberHomeCardsSkeleton />
       ) : error ? (
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Error"}
         </p>
       ) : !data ? null : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
+        <div className={dashboardGridClass}>
+          <Card className={dashboardCardClass}>
             <CardHeader>
-              <CardTitle className="text-base">Today</CardTitle>
-              <CardDescription>
+              <CardTitle className={dashboardCardTitleClass}>Today</CardTitle>
+              <CardDescription className="text-base leading-relaxed">
                 {data.checkedInToday
                   ? "You are checked in for today."
                   : "No check-in recorded for today (ask staff to mark attendance)."}
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card>
+          <Card className={dashboardCardClass}>
             <CardHeader>
-              <CardTitle className="text-base">Present days</CardTitle>
-              <CardDescription>
+              <CardTitle className={dashboardCardTitleClass}>
+                Present days
+              </CardTitle>
+              <CardDescription className="text-base leading-relaxed">
                 Total days marked present:{" "}
                 <span className="font-medium text-foreground">
                   {data.presentDays}
@@ -65,10 +73,12 @@ export default function MemberHomePage() {
               </CardDescription>
             </CardHeader>
           </Card>
-          <Card className="sm:col-span-2">
+          <Card className={`sm:col-span-2 ${dashboardCardClass} min-h-[192px]`}>
             <CardHeader>
-              <CardTitle className="text-base">Subscription</CardTitle>
-              <CardDescription>
+              <CardTitle className={dashboardCardTitleClass}>
+                Subscription
+              </CardTitle>
+              <CardDescription className="text-base leading-relaxed">
                 {data.subscription ? (
                   <span className="flex flex-wrap items-center gap-2">
                     <Badge variant="secondary">{data.subscription.status}</Badge>
@@ -88,7 +98,7 @@ export default function MemberHomePage() {
                 )}
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
+            <CardContent className="text-base text-muted-foreground">
               Signed in as {data.profile.displayName ?? data.profile.email}
             </CardContent>
           </Card>

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { MemberHistoryTableSkeleton } from "@/components/layout/loading-skeletons";
 import {
   Table,
   TableBody,
@@ -31,13 +32,13 @@ export default function MemberHistoryPage() {
         Recent sessions you have logged.
       </SectionHeader>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading…</p>
+        <MemberHistoryTableSkeleton />
       ) : error ? (
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Error"}
         </p>
       ) : (
-        <div className="rounded-lg border border-border">
+        <div className="min-h-[220px] rounded-lg border border-border">
           <Table>
             <TableHeader>
               <TableRow>

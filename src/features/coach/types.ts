@@ -19,3 +19,18 @@ export type ProfileDto = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SubscriptionDto = {
+  id: string;
+  clientUserId: string;
+  status: "active" | "inactive" | "trial";
+  startsAt: string | null;
+  endsAt: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CoachClientRow = ProfileDto & {
+  subscription: SubscriptionDto | null;
+};

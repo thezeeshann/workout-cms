@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { apiJson } from "@/lib/api/client";
 import { SectionHeader } from "@/components/layout/section-header";
+import { AdminClientsTableSkeleton } from "@/components/layout/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -27,7 +28,7 @@ export default function AdminClientsPage() {
         Subscription status, attendance days, and assignments.
       </SectionHeader>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading clients…</p>
+        <AdminClientsTableSkeleton />
       ) : error ? (
         <p className="text-sm text-destructive">
           {error instanceof Error ? error.message : "Failed to load"}
